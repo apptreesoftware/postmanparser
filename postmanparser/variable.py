@@ -18,6 +18,17 @@ class Variable:
     description: Description = None
     system: bool = False
 
+    def to_dict(self):
+        return {
+            "key": self.key,
+            "value": self.value,
+            "type": self.variable_type,
+            "name": self.name,
+            "description": self.description,
+            "system": self.system,
+        }
+
+
     @classmethod
     def parse(cls, data: dict):
         id = data.get("id")

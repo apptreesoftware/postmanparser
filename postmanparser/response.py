@@ -18,6 +18,7 @@ class Response:
     body: Union[str, None] = None
     status: str = ""
     code: int = 0
+    name: str = ""
 
     @classmethod
     def parse(cls, data: dict):
@@ -37,7 +38,8 @@ class Response:
 
         return cls(
             id=data.get("id", ""),
-            original_request=data.get("original-request", ""),
+            name=data.get("name", ""),
+            original_request=Request.parse(data.get('originalRequest')),
             response_time=data.get("responseTime"),
             timings=data.get("timings"),
             header=header_list if header_list else header,

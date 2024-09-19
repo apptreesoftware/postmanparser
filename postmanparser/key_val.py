@@ -22,3 +22,17 @@ class KeyVal:
             disabled=data.get("disabled", False),
             description=description,
         )
+
+    def to_dict(self):
+        dict_entry =  {
+            "key": self.key,
+            "value": self.value,
+        }
+        if self.disabled:
+            dict_entry["disabled"] = True
+        if self.description:
+            if isinstance(self.description, Description):
+                dict_entry["description"] = self.description.content
+            else:
+                dict_entry["description"] = self.description
+        return dict_entry

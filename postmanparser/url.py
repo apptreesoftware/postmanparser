@@ -17,6 +17,14 @@ class Url:
     url_hash: str = ""
     variable: List[Variable] = None
 
+    @property
+    def query_params(self) -> List[dict]:
+        params = []
+        if self.query:
+            for param in self.query:
+                params.append(param.to_dict())
+        return params
+
     @classmethod
     def parse(cls, data: dict):
         protocol = data.get("protocol", "")

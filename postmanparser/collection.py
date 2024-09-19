@@ -58,6 +58,15 @@ class Collection:
         if event:
             self.event = [Event.parse(_) for _ in event]
 
+    def variable_dict(self) -> List[dict]:
+        var_dict = []
+        for var in self.variable:
+            dict_entry = {'key': var.key, 'value': var.value}
+            if var.variable_type != "any":
+                dict_entry['type'] = var.variable_type
+            var_dict.append(dict_entry)
+        return var_dict
+
     def parse_from_file(self, file_path):
         self.file_path = file_path
         with open(self.file_path, "r", encoding="utf-8") as f:
@@ -116,6 +125,13 @@ class Collection:
                 result.append(item)
         return result
 
+    def get_group_for_item(self, item: Item) -> ItemGroup:
+        for itm in self.item:
+            if isinstance(itm, ItemGroup):
+                for i in itm.item:
+                    if i == item:
+                        return itm
+
     def get_items_of_folder(self, folder: str) -> List[Union[Item, ItemGroup]]:
         nested_folders = folder.split("/")
         items = self.item
@@ -131,6 +147,25 @@ class Collection:
                     f"Folder with name {_folder} does not exists."
                 )
             items = next_item_group.item
+        return items
+
+    def get_all_items(self) -> List[Item]:
+        items: List[Item] = []
+        for itm in self.item:
+            if isinstance(itm, Item):
+                items.append(itm)
+            else:
+                items.extend(self._get_items_from_item_group(itm, ""))
+        return items
+
+    def _get_items_from_item_group(self, item_group: ItemGroup, folder: str) -> List[Item]:
+        items: List[Item] = []
+        for itm in item_group.item:
+            if isinstance(itm, Item):
+                items.append(itm)
+            else:
+                items.extend(self._get_items_from_item_group(
+                    itm, folder + "/" + itm.name))
         return items
 
     def get_requests(
