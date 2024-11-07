@@ -60,6 +60,8 @@ class Collection:
 
     def variable_dict(self) -> List[dict]:
         var_dict = []
+        if self.variable is None:
+            return []
         for var in self.variable:
             dict_entry = {'key': var.key, 'value': var.value}
             if var.variable_type != "any":
